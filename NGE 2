@@ -1,0 +1,77 @@
+//BRUTE
+import java.util.Arrays;
+
+public class BruteForceNextGreaterElementII {
+    
+    public static int[] nextGreaterElements(int[] nums) {
+        int n = nums.length;
+        int[] res = new int[n];
+
+        // Fill the result array with -1 initially
+        // Meaning: If we don't find any greater element, we keep -1
+        Arrays.fill(res, -1);
+        
+        // Outer loop: for every element in the array
+        for (int i = 0; i < n; i++) {
+            
+            // Inner loop: check the next elements circularly
+            for (int j = 1; j < n; j++) {
+                int nextIndex = (i + j) % n; // To wrap around the array (circular behavior)
+                
+                // If we find a greater element
+                if (nums[nextIndex] > nums[i]) {
+                    res[i] = nums[nextIndex]; // Update result
+                    break; // Found the next greater, so break the loop
+                }
+            }
+        }
+        
+        return res;
+    }
+
+    public static void main(String[] args) {
+        int[] nums = {1, 2, 1}; // Example input
+        int[] result = nextGreaterElements(nums); // Call the function
+        System.out.println(Arrays.toString(result)); // Print the output
+    }
+}
+//OPTIMAL
+import java.util.Arrays;
+import java.util.Stack;
+
+public class OptimalNextGreaterElementII {
+    
+    public static int[] nextGreaterElements(int[] nums) {
+        int n = nums.length;
+        int[] res = new int[n];
+
+        // Fill the result array with -1 initially
+        Arrays.fill(res, -1);
+        
+        Stack<Integer> stack = new Stack<>(); // Stack will store indices, not values
+
+        // Traverse the array twice to simulate the circular behavior
+        for (int i = 0; i < 2 * n; i++) {
+            int current = nums[i % n]; // Current element (handle circular with modulo)
+
+            // While stack is not empty and current element is greater
+            while (!stack.isEmpty() && nums[stack.peek()] < current) {
+                int index = stack.pop(); // Get the index from top of the stack
+                res[index] = current;    // Set current element as the next greater
+            }
+
+            // Only push indices during the first pass (i < n)
+            if (i < n) {
+                stack.push(i);
+            }
+        }
+
+        return res;
+    }
+
+    public static void main(String[] args) {
+        int[] nums = {1, 2, 1}; // Example input
+        int[] result = nextGreaterElements(nums); // Call the function
+        System.out.println(Arrays.toString(result)); // Print the output
+    }
+}
